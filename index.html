@@ -13,8 +13,7 @@
   --txt:#f0f0f0;--txt2:#888;--txt3:#555;
   --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
   --radius:10px;--radius-lg:14px;
-  --orange:#FF6B35;--blue:#118AB2;--green:#06D6A0;--red:#EF476F;
-  --purple:#7B61FF;
+  --orange:#FF6B35;--blue:#118AB2;--green:#06D6A0;--red:#EF476F;--purple:#7B61FF;
 }
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
 .wrap{max-width:960px;margin:0 auto;padding:2rem 1.25rem}
@@ -27,13 +26,11 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-hei
 .nav-btn:hover{border-color:var(--border2);color:var(--txt)}
 .nav-btn.active{background:var(--orange);color:#fff;border-color:var(--orange)}
 .section{display:none}.section.show{display:block}
-
-/* METRICS */
+.pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--txt2)}
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:1.5rem}
 .mc{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border)}
 .mc .ml{font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
 .mc .mv{font-family:'DM Mono',monospace;font-size:20px;font-weight:500}
-.pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--txt2)}
 
 /* CALENDARIO */
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
@@ -67,10 +64,7 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-hei
 .form-card{background:var(--bg2);border-radius:var(--radius-lg);padding:1.25rem;margin-bottom:1.5rem;border:1px solid var(--border)}
 .form-card h3{font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
 .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px}
-.form-grid input,.form-grid select,.form-grid textarea{
-  font-family:'Syne',sans-serif;font-size:13px;padding:9px 12px;
-  border:1px solid var(--border);border-radius:var(--radius);
-  background:var(--bg3);color:var(--txt);width:100%;outline:none;transition:border-color .15s}
+.form-grid input,.form-grid select,.form-grid textarea{font-family:'Syne',sans-serif;font-size:13px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg3);color:var(--txt);width:100%;outline:none;transition:border-color .15s}
 .form-grid textarea{resize:vertical;min-height:40px;grid-column:1/-1}
 .form-grid input:focus,.form-grid select:focus,.form-grid textarea:focus{border-color:var(--orange)}
 .form-grid select option{background:var(--bg3)}
@@ -80,16 +74,42 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-hei
 .ep{font-family:'Syne',sans-serif;font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;transition:all .15s}
 .ep:hover{border-color:var(--border2);color:var(--txt)}
 .ep.sel{color:#fff;border-color:transparent}
-.ep[data-emp="Apex"].sel{background:var(--purple)}
-.ep[data-emp="Fundednext"].sel{background:var(--orange)}
-.ep[data-emp="Lucid"].sel{background:var(--green);color:#000}
 .cp{font-family:'DM Mono',monospace;font-size:12px;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;transition:all .15s}
 .cp:hover{border-color:var(--border2);color:var(--txt)}
 .cp.sel{background:var(--bg3);color:var(--txt);border-color:var(--border2);font-weight:500}
 .hint-text{font-size:12px;color:var(--txt3)}
 .btn-add{font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:9px 22px;border-radius:20px;border:none;background:var(--orange);color:#fff;cursor:pointer;transition:opacity .15s}
 .btn-add:hover{opacity:.85}
-.btn-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.btn-sec{font-family:'Syne',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;transition:all .15s}
+.btn-sec:hover{color:var(--txt);border-color:var(--border2)}
+.btn-danger{font-family:'Syne',sans-serif;font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid rgba(239,71,111,.3);background:transparent;color:var(--red);cursor:pointer;transition:all .15s}
+.btn-danger:hover{background:rgba(239,71,111,.1)}
+
+/* GESTOR CUENTAS */
+.empresa-card{background:var(--bg2);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px;border:1px solid var(--border)}
+.empresa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.empresa-name{display:flex;align-items:center;gap:8px}
+.emp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.empresa-title{font-size:14px;font-weight:700}
+.cuentas-grid{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.cuenta-chip{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg3);font-family:'DM Mono',monospace;font-size:12px}
+.cuenta-chip .tipo{font-size:10px;color:var(--txt2);font-family:'Syne',sans-serif;margin-left:2px}
+.cuenta-chip .del-c{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:13px;padding:0;line-height:1;margin-left:4px;transition:color .15s}
+.cuenta-chip .del-c:hover{color:var(--red)}
+.add-cuenta-row{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding-top:8px;border-top:1px solid var(--border)}
+.add-cuenta-row input,.add-cuenta-row select{font-family:'Syne',sans-serif;font-size:12px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--txt);outline:none;transition:border-color .15s}
+.add-cuenta-row input{width:130px}
+.add-cuenta-row input:focus,.add-cuenta-row select:focus{border-color:var(--orange)}
+.add-cuenta-row select option{background:var(--bg)}
+.add-emp-form{background:var(--bg2);border-radius:var(--radius-lg);padding:1.25rem;border:1px solid var(--border);margin-top:1rem}
+.add-emp-form h3{font-size:13px;font-weight:500;color:var(--txt2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.add-emp-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.add-emp-row input{font-family:'Syne',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg3);color:var(--txt);outline:none;width:180px;transition:border-color .15s}
+.add-emp-row input:focus{border-color:var(--orange)}
+.color-pick{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.color-opt{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.color-opt.sel{border-color:#fff;transform:scale(1.2)}
+.divider{height:1px;background:var(--border);margin:1.25rem 0}
 
 /* TABLA */
 .tbl-wrap{overflow-x:auto;margin-bottom:1.5rem}
@@ -98,13 +118,10 @@ th{text-align:left;padding:9px 11px;font-size:11px;color:var(--txt2);font-weight
 td{padding:10px 11px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;color:var(--txt)}
 td.nc{font-family:'Syne',sans-serif;font-weight:500;font-size:13px}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg2)}
+tr:hover td{background:rgba(255,255,255,.02)}
 .badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-family:'Syne',sans-serif;font-weight:500}
 .badge.pos{background:rgba(6,214,160,.12);color:var(--green)}
 .badge.neg{background:rgba(239,71,111,.12);color:var(--red)}
-.badge.apex{background:rgba(123,97,255,.12);color:var(--purple)}
-.badge.fundednext{background:rgba(255,107,53,.12);color:var(--orange)}
-.badge.lucid{background:rgba(6,214,160,.12);color:var(--green)}
 .sdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
 .del-btn{background:none;border:none;cursor:pointer;color:var(--txt3);font-size:14px;padding:0 4px;transition:color .15s}
 .del-btn:hover{color:var(--red)}
@@ -112,8 +129,6 @@ tr:hover td{background:var(--bg2)}
 .filter-row select{font-family:'Syne',sans-serif;font-size:12px;padding:6px 12px;border:1px solid var(--border);border-radius:20px;background:var(--bg2);color:var(--txt);outline:none;cursor:pointer}
 .filter-row select option{background:var(--bg2)}
 .empty{text-align:center;padding:3rem;font-size:13px;color:var(--txt3)}
-
-/* MES */
 .month-group{margin-bottom:1.75rem}
 .month-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .month-title .mt-sum{font-family:'DM Mono',monospace;font-size:14px;font-weight:400}
@@ -130,8 +145,7 @@ tr:hover td{background:var(--bg2)}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--txt2)}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 .ranking-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:8px;margin-bottom:1.5rem}
-.rank-card{background:var(--bg2);border-radius:var(--radius);padding:13px 15px;border:1px solid var(--border);display:flex;align-items:center;gap:13px;transition:border-color .15s}
-.rank-card:hover{border-color:var(--border2)}
+.rank-card{background:var(--bg2);border-radius:var(--radius);padding:13px 15px;border:1px solid var(--border);display:flex;align-items:center;gap:13px}
 .rank-num{font-size:24px;font-weight:700;min-width:30px;font-family:'DM Mono',monospace}
 .rank-num.r1{color:#FFD23F}.rank-num.r2{color:#9CA3AF}.rank-num.r3{color:#CD7F32}.rank-num.r4{color:var(--txt3)}
 .rank-info .rn{font-size:13px;font-weight:500}
@@ -146,8 +160,6 @@ tr:hover td{background:var(--bg2)}
 .op-card{border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px;margin-bottom:10px}
 .op-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .op-card-meta{font-family:'DM Mono',monospace;font-size:12px;color:var(--txt2);display:flex;gap:12px;flex-wrap:wrap;margin-top:5px}
-
-/* SCROLLBAR */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
@@ -165,6 +177,7 @@ tr:hover td{background:var(--bg2)}
     <button class="nav-btn" onclick="showSec('historial',this)">Historial</button>
     <button class="nav-btn" onclick="showSec('meses',this)">Por mes</button>
     <button class="nav-btn" onclick="showSec('stats',this)">Estrategias</button>
+    <button class="nav-btn" onclick="showSec('cuentas',this)">Mis cuentas</button>
   </div>
 
   <!-- CALENDARIO -->
@@ -201,27 +214,18 @@ tr:hover td{background:var(--bg2)}
         <input type="number" id="f-pct" placeholder="% resultado (ej: 2.5)" step="0.01"/>
         <input type="number" id="f-usd" placeholder="$ resultado (ej: 150)" step="0.01"/>
       </div>
-
       <div class="emp-row">
         <span class="field-label">Empresa</span>
-        <div class="pill-group">
-          <button class="ep" data-emp="Apex" onclick="selectEmp('Apex')">Apex</button>
-          <button class="ep" data-emp="Fundednext" onclick="selectEmp('Fundednext')">Fundednext</button>
-          <button class="ep" data-emp="Lucid" onclick="selectEmp('Lucid')">Lucid</button>
-        </div>
+        <div class="pill-group" id="emp-pills-nueva"></div>
       </div>
-
       <div class="emp-row" style="margin-bottom:16px">
         <span class="field-label">Cuenta</span>
-        <div class="pill-group" id="cuenta-pills">
-          <span class="hint-text">Selecciona una empresa primero</span>
-        </div>
+        <div class="pill-group" id="cuenta-pills-nueva"><span class="hint-text">Selecciona una empresa primero</span></div>
       </div>
-
       <div class="form-grid">
         <textarea id="f-nota" placeholder="Notas opcionales..."></textarea>
       </div>
-      <div class="btn-row">
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
         <button class="btn-add" onclick="addOp()">Guardar operacion</button>
         <span id="form-msg" style="font-size:12px"></span>
       </div>
@@ -230,26 +234,7 @@ tr:hover td{background:var(--bg2)}
 
   <!-- HISTORIAL -->
   <div class="section" id="sec-historial">
-    <div class="filter-row">
-      <select id="fil-strat" onchange="renderHistorial()">
-        <option value="">Todas las estrategias</option>
-        <option>Alpha</option><option>Fury RR negativo</option>
-        <option>Fury RR 1:2</option><option>Fury 2.0</option>
-      </select>
-      <select id="fil-emp" onchange="renderHistorial()">
-        <option value="">Todas las empresas</option>
-        <option>Apex</option><option>Fundednext</option><option>Lucid</option>
-      </select>
-      <select id="fil-cuenta" onchange="renderHistorial()">
-        <option value="">Todas las cuentas</option>
-        <option>PA01</option><option>PA02</option><option>Bolt</option><option>Lucidflex</option>
-      </select>
-      <select id="fil-res" onchange="renderHistorial()">
-        <option value="">Todas</option>
-        <option value="pos">Solo ganancias</option>
-        <option value="neg">Solo perdidas</option>
-      </select>
-    </div>
+    <div class="filter-row" id="filter-row-hist"></div>
     <div id="historial-content"></div>
   </div>
 
@@ -264,49 +249,106 @@ tr:hover td{background:var(--bg2)}
     </div>
     <div id="stats-content"></div>
   </div>
+
+  <!-- MIS CUENTAS -->
+  <div class="section" id="sec-cuentas">
+    <div id="empresas-list"></div>
+    <div class="add-emp-form">
+      <h3>Agregar nueva empresa</h3>
+      <div class="add-emp-row">
+        <input type="text" id="new-emp-name" placeholder="Nombre (ej: FTMO)"/>
+      </div>
+      <div style="margin-bottom:12px">
+        <span class="field-label">Color</span>
+        <div class="color-pick" id="color-pick"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <button class="btn-add" onclick="addEmpresa()">Agregar empresa</button>
+        <span id="emp-msg" style="font-size:12px"></span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
 const STRATS=['Alpha','Fury RR negativo','Fury RR 1:2','Fury 2.0'];
 const STRAT_COLORS={'Alpha':'#FF6B35','Fury RR negativo':'#118AB2','Fury RR 1:2':'#06D6A0','Fury 2.0':'#EF476F'};
-const EMPRESAS={'Apex':['PA01','PA02'],'Fundednext':['Bolt'],'Lucid':['Lucidflex']};
-const EMP_COLORS={'Apex':'#7B61FF','Fundednext':'#FF6B35','Lucid':'#06D6A0'};
 const MONTHS_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTHS_SHORT=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const PALETTE=['#FF6B35','#7B61FF','#06D6A0','#118AB2','#EF476F','#FFD23F','#FF9F1C','#2EC4B6','#9B5DE5','#E71D36'];
 const TODAY=new Date();TODAY.setHours(0,0,0,0);
 const TODAY_STR=TODAY.toISOString().split('T')[0];
 
-let ops=[];
-let calYear=2026,calMonth=TODAY.getMonth();
-let chartRefs={};
-let statsSegment='mes';
-let selEmp='',selCuenta='';
+const DEFAULT_EMPRESAS=[
+  {id:'apex',name:'Apex',color:'#7B61FF',cuentas:[{id:'pa02',name:'PA02',tipo:'PA'}]},
+  {id:'fundednext',name:'Fundednext',color:'#FF6B35',cuentas:[{id:'bolt',name:'Bolt',tipo:'Challenge'}]},
+  {id:'lucid',name:'Lucid',color:'#06D6A0',cuentas:[{id:'lucidflex',name:'Lucidflex',tipo:'PA'}]}
+];
 
-function saveLocal(){try{localStorage.setItem('tj2026_pro',JSON.stringify(ops))}catch(e){}}
-function loadLocal(){try{const d=localStorage.getItem('tj2026_pro');if(d)ops=JSON.parse(d)}catch(e){}}
+let ops=[],empresas=[];
+let calYear=2026,calMonth=TODAY.getMonth();
+let chartRefs={},statsSegment='mes';
+let selEmp='',selCuenta='',selColor=PALETTE[0];
+
+function saveLocal(){
+  try{localStorage.setItem('tj2026_ops',JSON.stringify(ops));localStorage.setItem('tj2026_empresas',JSON.stringify(empresas))}catch(e){}
+}
+function loadLocal(){
+  try{
+    const o=localStorage.getItem('tj2026_ops');if(o)ops=JSON.parse(o);
+    const e=localStorage.getItem('tj2026_empresas');
+    empresas=e?JSON.parse(e):JSON.parse(JSON.stringify(DEFAULT_EMPRESAS));
+  }catch(e){empresas=JSON.parse(JSON.stringify(DEFAULT_EMPRESAS))}
+}
 document.getElementById('f-fecha').value=TODAY_STR;
 loadLocal();
 
+function buildColorPick(){
+  document.getElementById('color-pick').innerHTML=PALETTE.map(c=>
+    `<div class="color-opt${c===selColor?' sel':''}" style="background:${c}" onclick="pickColor('${c}')"></div>`
+  ).join('');
+}
+function pickColor(c){selColor=c;buildColorPick()}
+buildColorPick();
+
 function fmt(v,dec=1){if(v===null||v===undefined||isNaN(v))return'—';return(v>=0?'+':'')+Number(v).toFixed(dec)}
 function fmtU(v){if(v===null||isNaN(v))return'—';return(v>=0?'+$':'-$')+Math.abs(Number(v)).toFixed(0)}
-
-function selectEmp(emp){
-  selEmp=emp;selCuenta='';
-  document.querySelectorAll('.ep').forEach(b=>b.classList.toggle('sel',b.dataset.emp===emp));
-  const cuentas=EMPRESAS[emp]||[];
-  document.getElementById('cuenta-pills').innerHTML=cuentas.map(c=>
-    `<button class="cp${cuentas.length===1?' sel':''}" data-c="${c}" onclick="selectCuenta('${c}')">${c}</button>`
-  ).join('');
-  if(cuentas.length===1)selCuenta=cuentas[0];
-}
-function selectCuenta(c){
-  selCuenta=c;
-  document.querySelectorAll('.cp').forEach(b=>b.classList.toggle('sel',b.dataset.c===c));
-}
+function genId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function getEmp(id){return empresas.find(e=>e.id===id)}
 
 function empBadge(o){
-  const cls=o.empresa?o.empresa.toLowerCase():'';
-  return`<span class="badge ${cls}">${o.empresa||'—'}</span> <span style="font-family:'DM Mono',monospace;font-size:11px;color:#888">${o.cuenta||''}</span>`;
+  const emp=getEmp(o.empresaId);
+  const color=emp?emp.color:'#888';
+  const empName=emp?emp.name:(o.empresa||'—');
+  const cuenta=emp?emp.cuentas.find(c=>c.id===o.cuentaId):null;
+  const cuentaName=cuenta?cuenta.name:(o.cuenta||'');
+  const tipo=cuenta?(' · '+cuenta.tipo):'';
+  return`<span style="display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:11px;font-family:'Syne',sans-serif;font-weight:500;background:${color}22;color:${color}">${empName}</span> <span style="font-family:'DM Mono',monospace;font-size:11px;color:#666">${cuentaName}${tipo}</span>`;
+}
+
+function buildEmpPills(){
+  document.getElementById('emp-pills-nueva').innerHTML=empresas.length
+    ? empresas.map(e=>`<button class="ep${selEmp===e.id?' sel':''}" style="${selEmp===e.id?'background:'+e.color+';border-color:'+e.color:''}" onclick="selectEmp('${e.id}')">${e.name}</button>`).join('')
+    : `<span class="hint-text">Ve a "Mis cuentas" para agregar empresas</span>`;
+}
+
+function selectEmp(id){
+  selEmp=id;selCuenta='';
+  buildEmpPills();
+  const emp=getEmp(id);
+  if(!emp||!emp.cuentas.length){
+    document.getElementById('cuenta-pills-nueva').innerHTML=`<span class="hint-text">Sin cuentas — agrégalas en "Mis cuentas"</span>`;
+    return;
+  }
+  document.getElementById('cuenta-pills-nueva').innerHTML=emp.cuentas.map(c=>
+    `<button class="cp" data-c="${c.id}" onclick="selectCuenta('${c.id}')">${c.name} <span style="font-size:10px;opacity:.6;margin-left:2px">${c.tipo}</span></button>`
+  ).join('');
+  if(emp.cuentas.length===1){selCuenta=emp.cuentas[0].id;document.querySelector('#cuenta-pills-nueva .cp').classList.add('sel')}
+}
+
+function selectCuenta(id){
+  selCuenta=id;
+  document.querySelectorAll('#cuenta-pills-nueva .cp').forEach(b=>b.classList.toggle('sel',b.dataset.c===id));
 }
 
 function showSec(id,btn){
@@ -315,18 +357,18 @@ function showSec(id,btn){
   document.getElementById('sec-'+id).classList.add('show');
   btn.classList.add('active');
   if(id==='cal')renderCalendar();
-  if(id==='historial')renderHistorial();
+  if(id==='nueva'){buildEmpPills()}
+  if(id==='historial'){buildFilterHist();renderHistorial()}
   if(id==='meses')renderMeses();
   if(id==='stats')renderStats();
+  if(id==='cuentas')renderCuentas();
 }
 
 function setSegment(seg,btn){
   statsSegment=seg;
   document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderStats();
+  btn.classList.add('active');renderStats();
 }
-
 function changeMonth(d){
   calMonth+=d;
   if(calMonth>11){calMonth=0;calYear++}
@@ -345,17 +387,112 @@ function addOp(){
   if(!fecha||!strat||isNaN(pct)){msg.style.color='#EF476F';msg.textContent='Completa fecha, estrategia y %';setTimeout(()=>msg.textContent='',2500);return}
   if(!selEmp){msg.style.color='#EF476F';msg.textContent='Selecciona una empresa';setTimeout(()=>msg.textContent='',2500);return}
   if(!selCuenta){msg.style.color='#EF476F';msg.textContent='Selecciona una cuenta';setTimeout(()=>msg.textContent='',2500);return}
-  ops.push({id:Date.now(),fecha,strat,empresa:selEmp,cuenta:selCuenta,par:par||'—',pct,usd:isNaN(usd)?null:usd,nota});
+  const emp=getEmp(selEmp);
+  const cuenta=emp?emp.cuentas.find(c=>c.id===selCuenta):null;
+  ops.push({id:Date.now(),fecha,strat,empresaId:selEmp,cuentaId:selCuenta,empresa:emp?emp.name:'',cuenta:cuenta?cuenta.name:'',par:par||'—',pct,usd:isNaN(usd)?null:usd,nota});
   ops.sort((a,b)=>b.fecha.localeCompare(a.fecha));
   saveLocal();
-  document.getElementById('f-par').value='';
-  document.getElementById('f-pct').value='';
-  document.getElementById('f-usd').value='';
-  document.getElementById('f-nota').value='';
+  document.getElementById('f-par').value='';document.getElementById('f-pct').value='';
+  document.getElementById('f-usd').value='';document.getElementById('f-nota').value='';
   msg.style.color='#06D6A0';msg.textContent='¡Guardado!';setTimeout(()=>msg.textContent='',2000);
 }
 
 function deleteOp(id){ops=ops.filter(o=>o.id!==id);saveLocal()}
+
+function renderCuentas(){
+  const el=document.getElementById('empresas-list');
+  if(!empresas.length){el.innerHTML=`<div class="empty">No tienes empresas. Agrega una abajo.</div>`;return}
+  el.innerHTML=empresas.map(emp=>`
+    <div class="empresa-card">
+      <div class="empresa-header">
+        <div class="empresa-name">
+          <div class="emp-dot" style="background:${emp.color}"></div>
+          <div class="empresa-title">${emp.name}</div>
+          <span style="font-size:11px;color:#555;font-family:'DM Mono',monospace">${emp.cuentas.length} cuenta${emp.cuentas.length!==1?'s':''}</span>
+        </div>
+        <button class="btn-danger" onclick="deleteEmpresa('${emp.id}')">Eliminar empresa</button>
+      </div>
+      <div class="cuentas-grid">
+        ${emp.cuentas.length
+          ? emp.cuentas.map(c=>`<div class="cuenta-chip">
+              <span>${c.name}</span><span class="tipo">${c.tipo}</span>
+              <button class="del-c" onclick="deleteCuenta('${emp.id}','${c.id}')" title="Eliminar">×</button>
+            </div>`).join('')
+          : `<span class="hint-text">Sin cuentas activas</span>`}
+      </div>
+      <div class="add-cuenta-row">
+        <input type="text" id="nc-name-${emp.id}" placeholder="Nombre cuenta"/>
+        <select id="nc-tipo-${emp.id}">
+          <option value="PA">PA</option>
+          <option value="Challenge">Challenge</option>
+          <option value="Evaluation">Evaluation</option>
+          <option value="Live">Live</option>
+          <option value="Otro">Otro</option>
+        </select>
+        <button class="btn-sec" onclick="addCuenta('${emp.id}')">+ Agregar cuenta</button>
+      </div>
+    </div>`).join('');
+}
+
+function addEmpresa(){
+  const name=document.getElementById('new-emp-name').value.trim();
+  const msg=document.getElementById('emp-msg');
+  if(!name){msg.style.color='#EF476F';msg.textContent='Escribe el nombre';setTimeout(()=>msg.textContent='',2000);return}
+  if(empresas.find(e=>e.name.toLowerCase()===name.toLowerCase())){msg.style.color='#EF476F';msg.textContent='Ya existe esa empresa';setTimeout(()=>msg.textContent='',2000);return}
+  empresas.push({id:genId(),name,color:selColor,cuentas:[]});
+  saveLocal();
+  document.getElementById('new-emp-name').value='';
+  msg.style.color='#06D6A0';msg.textContent='¡Empresa agregada!';setTimeout(()=>msg.textContent='',2000);
+  renderCuentas();buildEmpPills();
+}
+
+function deleteEmpresa(id){
+  if(!confirm('¿Eliminar esta empresa y todas sus cuentas?'))return;
+  empresas=empresas.filter(e=>e.id!==id);
+  if(selEmp===id){selEmp='';selCuenta=''}
+  saveLocal();renderCuentas();buildEmpPills();
+}
+
+function addCuenta(empId){
+  const nameEl=document.getElementById('nc-name-'+empId);
+  const tipoEl=document.getElementById('nc-tipo-'+empId);
+  const name=nameEl.value.trim();
+  if(!name)return;
+  const emp=getEmp(empId);if(!emp)return;
+  emp.cuentas.push({id:genId(),name,tipo:tipoEl.value});
+  saveLocal();nameEl.value='';
+  renderCuentas();buildEmpPills();
+}
+
+function deleteCuenta(empId,cuentaId){
+  const emp=getEmp(empId);if(!emp)return;
+  if(!confirm(`¿Eliminar la cuenta "${emp.cuentas.find(c=>c.id===cuentaId)?.name}"?`))return;
+  emp.cuentas=emp.cuentas.filter(c=>c.id!==cuentaId);
+  if(selCuenta===cuentaId)selCuenta='';
+  saveLocal();renderCuentas();buildEmpPills();
+}
+
+function buildFilterHist(){
+  const el=document.getElementById('filter-row-hist');if(!el)return;
+  const empOpts=empresas.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  const cuentaOpts=empresas.flatMap(e=>e.cuentas.map(c=>`<option value="${c.id}">${c.name} (${e.name})</option>`)).join('');
+  el.innerHTML=`
+    <select id="fil-strat" onchange="renderHistorial()">
+      <option value="">Todas las estrategias</option>
+      ${STRATS.map(s=>`<option>${s}</option>`).join('')}
+    </select>
+    <select id="fil-emp" onchange="renderHistorial()">
+      <option value="">Todas las empresas</option>${empOpts}
+    </select>
+    <select id="fil-cuenta" onchange="renderHistorial()">
+      <option value="">Todas las cuentas</option>${cuentaOpts}
+    </select>
+    <select id="fil-res" onchange="renderHistorial()">
+      <option value="">Todas</option>
+      <option value="pos">Solo ganancias</option>
+      <option value="neg">Solo perdidas</option>
+    </select>`;
+}
 
 function renderCalendar(){
   document.getElementById('cal-title').textContent=MONTHS_ES[calMonth]+' '+calYear;
@@ -436,17 +573,18 @@ function prefillDate(ds){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sec-nueva').classList.add('show');
   document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  buildEmpPills();
 }
 
 function renderHistorial(){
-  const fs=document.getElementById('fil-strat').value;
-  const fe=document.getElementById('fil-emp').value;
-  const fc=document.getElementById('fil-cuenta').value;
-  const fr=document.getElementById('fil-res').value;
+  const fs=document.getElementById('fil-strat')?.value||'';
+  const fe=document.getElementById('fil-emp')?.value||'';
+  const fc=document.getElementById('fil-cuenta')?.value||'';
+  const fr=document.getElementById('fil-res')?.value||'';
   let data=ops.filter(o=>{
     if(fs&&o.strat!==fs)return false;
-    if(fe&&o.empresa!==fe)return false;
-    if(fc&&o.cuenta!==fc)return false;
+    if(fe&&o.empresaId!==fe)return false;
+    if(fc&&o.cuentaId!==fc)return false;
     if(fr==='pos'&&o.pct<0)return false;
     if(fr==='neg'&&o.pct>=0)return false;
     return true;
@@ -466,8 +604,7 @@ function renderHistorial(){
     <tbody>${data.map(o=>`<tr>
       <td>${o.fecha}</td>
       <td class="nc"><span class="sdot" style="background:${STRAT_COLORS[o.strat]||'#888'}"></span>${o.strat}</td>
-      <td>${empBadge(o)}</td>
-      <td>${o.par}</td>
+      <td>${empBadge(o)}</td><td>${o.par}</td>
       <td><span class="badge ${o.pct>=0?'pos':'neg'}">${fmt(o.pct)}%</span></td>
       <td>${o.usd!==null?`<span class="${o.usd>=0?'pos':'neg'}">${fmtU(o.usd)}</span>`:'—'}</td>
       <td style="font-family:'Syne',sans-serif;font-size:12px;color:#666;max-width:120px;white-space:normal">${o.nota||'—'}</td>
@@ -495,8 +632,7 @@ function renderMeses(){
         <tbody>${list.map(o=>`<tr>
           <td>${o.fecha.slice(8)}</td>
           <td class="nc"><span class="sdot" style="background:${STRAT_COLORS[o.strat]||'#888'}"></span>${o.strat}</td>
-          <td>${empBadge(o)}</td>
-          <td>${o.par}</td>
+          <td>${empBadge(o)}</td><td>${o.par}</td>
           <td><span class="badge ${o.pct>=0?'pos':'neg'}">${fmt(o.pct)}%</span></td>
           <td>${o.usd!==null?`<span class="${o.usd>=0?'pos':'neg'}">${fmtU(o.usd)}</span>`:'—'}</td>
           <td style="font-family:'Syne',sans-serif;font-size:12px;color:#666;max-width:120px;white-space:normal">${o.nota||'—'}</td>
@@ -531,36 +667,30 @@ function renderStats(){
     </div>`).join('')}
   </div>
   ${hasM?`
-  <div class="chart-wrap">
-    <h3>Rendimiento mensual por estrategia</h3>
+  <div class="chart-wrap"><h3>Rendimiento mensual por estrategia</h3>
     <div class="legend">${STRATS.map(s=>`<div class="legend-item"><div class="legend-dot" style="background:${STRAT_COLORS[s]}"></div>${s}</div>`).join('')}</div>
     <div class="chart-h tall"><canvas id="ch-line"></canvas></div>
   </div>
-  <div class="chart-wrap">
-    <h3>Retorno acumulado por estrategia</h3>
+  <div class="chart-wrap"><h3>Retorno acumulado por estrategia</h3>
     <div class="legend">${STRATS.map(s=>`<div class="legend-item"><div class="legend-dot" style="background:${STRAT_COLORS[s]}"></div>${s}</div>`).join('')}</div>
     <div class="chart-h tall"><canvas id="ch-cum"></canvas></div>
   </div>
-  <div class="chart-wrap">
-    <h3>Comparativa por mes — barras</h3>
+  <div class="chart-wrap"><h3>Comparativa por mes — barras</h3>
     <div class="chart-h tall"><canvas id="ch-bar"></canvas></div>
   </div>`:`<div class="empty">Registra operaciones para ver las graficas comparativas</div>`}`;
   if(!hasM)return;
   setTimeout(()=>{
     destroyChart('line');destroyChart('cum');destroyChart('bar');
-    const gridColor='rgba(255,255,255,.06)';
-    const tickColor='#555';
-    const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gridColor},ticks:{font:{size:11},color:tickColor}},y:{grid:{color:gridColor},ticks:{font:{size:11},color:tickColor,callback:v=>v+'%'}}}};
+    const gc='rgba(255,255,255,.06)',tc='#555';
+    const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+'%'}}}};
     const mkDs=fn=>STRATS.map(s=>({label:s,data:fn(s),borderColor:STRAT_COLORS[s],backgroundColor:'transparent',tension:0.4,borderWidth:2.5,pointRadius:5,pointBackgroundColor:STRAT_COLORS[s],spanGaps:false}));
-    const c1=document.getElementById('ch-line');
-    if(c1)chartRefs['line']=new Chart(c1,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkD)},options:baseOpts});
-    const c2=document.getElementById('ch-cum');
-    if(c2)chartRefs['cum']=new Chart(c2,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkC)},options:baseOpts});
-    const c3=document.getElementById('ch-bar');
-    if(c3)chartRefs['bar']=new Chart(c3,{type:'bar',data:{labels:monthLabels,datasets:STRATS.map(s=>({label:s,data:monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s&&o.fecha.startsWith(k));return mo.length?+mo.reduce((a,o)=>a+o.pct,0).toFixed(2):0}),backgroundColor:STRAT_COLORS[s]+'BB',borderRadius:4,borderSkipped:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:10,padding:12,color:tickColor}}},scales:{x:{grid:{color:gridColor},ticks:{font:{size:11},color:tickColor}},y:{grid:{color:gridColor},ticks:{font:{size:11},color:tickColor,callback:v=>v+'%'}}}}});
+    const c1=document.getElementById('ch-line');if(c1)chartRefs['line']=new Chart(c1,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkD)},options:base});
+    const c2=document.getElementById('ch-cum');if(c2)chartRefs['cum']=new Chart(c2,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkC)},options:base});
+    const c3=document.getElementById('ch-bar');if(c3)chartRefs['bar']=new Chart(c3,{type:'bar',data:{labels:monthLabels,datasets:STRATS.map(s=>({label:s,data:monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s&&o.fecha.startsWith(k));return mo.length?+mo.reduce((a,o)=>a+o.pct,0).toFixed(2):0}),backgroundColor:STRAT_COLORS[s]+'BB',borderRadius:4,borderSkipped:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:10,padding:12,color:tc}}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+'%'}}}}});
   },80);
 }
 
+buildEmpPills();
 renderCalendar();
 </script>
 </body>
