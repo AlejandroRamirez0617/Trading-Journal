@@ -295,7 +295,18 @@ function saveLocal(){
 }
 function loadLocal(){
   try{
-    const o=localStorage.getItem('tj2026_ops');if(o)ops=JSON.parse(o);
+    // Migrate from old versions if new key doesn't exist
+    const newOps=localStorage.getItem('tj2026_ops');
+    if(newOps){
+      ops=JSON.parse(newOps);
+    } else {
+      // Try old keys in order
+      const oldKeys=['tj2026v5','tj2026v4','tj2026v3','tj2026v2','tj2026'];
+      for(const k of oldKeys){
+        const old=localStorage.getItem(k);
+        if(old){ops=JSON.parse(old);break}
+      }
+    }
     const e=localStorage.getItem('tj2026_empresas');
     empresas=e?JSON.parse(e):JSON.parse(JSON.stringify(DEFAULT_EMPRESAS));
   }catch(e){empresas=JSON.parse(JSON.stringify(DEFAULT_EMPRESAS))}
