@@ -85,7 +85,53 @@ body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--txt);min-hei
 .btn-danger{font-family:'Syne',sans-serif;font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid rgba(239,71,111,.3);background:transparent;color:var(--red);cursor:pointer;transition:all .15s}
 .btn-danger:hover{background:rgba(239,71,111,.1)}
 
-/* GESTOR CUENTAS */
+/* PLAN SEMANAL */
+.dias-semana{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap}
+.dia-btn{font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:7px 18px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px}
+.dia-btn:hover{border-color:var(--border2);color:var(--txt)}
+.dia-btn.active{background:var(--txt);color:var(--bg);border-color:var(--txt)}
+.dia-btn.hoy{box-shadow:0 0 0 2px var(--orange)}
+.hoy-badge{font-size:10px;font-weight:500;padding:1px 7px;border-radius:10px;background:var(--orange);color:#fff}
+.plan-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.plan-title{font-size:13px;color:var(--txt2);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.cuentas-plan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:1.5rem}
+.plan-card{background:var(--bg2);border-radius:var(--radius-lg);padding:1rem 1.1rem;border:1px solid var(--border)}
+.plan-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.plan-card-emp{font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--txt2)}
+.plan-card-tipo{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.plan-card-nombre{font-size:20px;font-weight:700;margin-bottom:12px}
+.plan-params{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.pp{background:var(--bg3);border-radius:8px;padding:8px 10px;border:1px solid var(--border)}
+.pp .ppl{font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.pp .ppv{font-family:'DM Mono',monospace;font-size:15px;font-weight:500}
+.pp.full{grid-column:1/-1}
+.plan-actions{display:flex;gap:6px}
+.plan-btn-edit{font-family:'Syne',sans-serif;font-size:12px;font-weight:500;padding:6px 0;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--txt);cursor:pointer;flex:1;transition:all .15s}
+.plan-btn-edit:hover{background:var(--bg3)}
+.plan-btn-rem{font-family:'Syne',sans-serif;font-size:12px;font-weight:500;padding:6px 0;border-radius:8px;border:1px solid rgba(239,71,111,.3);background:transparent;color:var(--red);cursor:pointer;flex:1;transition:all .15s}
+.plan-btn-rem:hover{background:rgba(239,71,111,.08)}
+.plan-empty{text-align:center;padding:2.5rem;font-size:13px;color:var(--txt3);border:1px dashed var(--border);border-radius:var(--radius-lg);margin-bottom:1.5rem}
+.plan-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+.plan-modal{background:var(--bg2);border-radius:var(--radius-lg);padding:1.5rem;width:90%;max-width:450px;border:1px solid var(--border2);max-height:88vh;overflow-y:auto}
+.plan-modal h3{font-size:15px;font-weight:700;margin-bottom:1.25rem}
+.plan-modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--txt2);line-height:1}
+.pf{margin-bottom:10px}
+.pf label{font-size:11px;color:var(--txt2);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:5px}
+.pf input,.pf select{font-family:'Syne',sans-serif;font-size:13px;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg3);color:var(--txt);width:100%;outline:none;transition:border-color .15s}
+.pf input:focus,.pf select:focus{border-color:var(--orange)}
+.pf select option{background:var(--bg3)}
+.pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dias-check{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.dc{font-family:'Syne',sans-serif;font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;transition:all .15s}
+.dc.sel{background:var(--txt);color:var(--bg);border-color:var(--txt)}
+.plan-modal-footer{display:flex;gap:8px;margin-top:1rem}
+.pm-save{font-family:'Syne',sans-serif;font-size:13px;font-weight:500;padding:9px 0;border-radius:20px;border:none;background:var(--orange);color:#fff;cursor:pointer;flex:1}
+.pm-cancel{font-family:'Syne',sans-serif;font-size:13px;padding:9px 0;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--txt2);cursor:pointer;flex:1}
+.color-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.co{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
+.co.sel{border-color:#fff;transform:scale(1.2)}
+
+
 .empresa-card{background:var(--bg2);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:10px;border:1px solid var(--border)}
 .empresa-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
 .empresa-name{display:flex;align-items:center;gap:8px}
@@ -178,6 +224,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
     <button class="nav-btn" onclick="showSec('meses',this)">Por mes</button>
     <button class="nav-btn" onclick="showSec('stats',this)">Estrategias</button>
     <button class="nav-btn" onclick="showSec('cuentas',this)">Mis cuentas</button>
+    <button class="nav-btn" onclick="showSec('plan',this)">Plan semanal</button>
   </div>
 
   <!-- CALENDARIO -->
@@ -248,6 +295,12 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <button class="seg-btn" onclick="setSegment('ytd',this)">Todo el año</button>
     </div>
     <div id="stats-content"></div>
+  </div>
+
+  <!-- PLAN SEMANAL -->
+  <div class="section" id="sec-plan">
+    <div class="dias-semana" id="dias-btns-plan"></div>
+    <div id="plan-content"></div>
   </div>
 
   <!-- MIS CUENTAS -->
@@ -373,6 +426,7 @@ function showSec(id,btn){
   if(id==='meses')renderMeses();
   if(id==='stats')renderStats();
   if(id==='cuentas')renderCuentas();
+  if(id==='plan'){loadPlan();buildDiasBtnsPlan();renderPlanDia();}
 }
 
 function setSegment(seg,btn){
@@ -700,6 +754,147 @@ function renderStats(){
     const c3=document.getElementById('ch-bar');if(c3)chartRefs['bar']=new Chart(c3,{type:'bar',data:{labels:monthLabels,datasets:STRATS.map(s=>({label:s,data:monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s&&o.fecha.startsWith(k));return mo.length?+mo.reduce((a,o)=>a+o.pct,0).toFixed(2):0}),backgroundColor:STRAT_COLORS[s]+'BB',borderRadius:4,borderSkipped:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:10,padding:12,color:tc}}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+'%'}}}}});
   },80);
 }
+
+// ===================== PLAN SEMANAL =====================
+const DIAS_SEMANA=['Lunes','Martes','Miercoles','Jueves','Viernes'];
+const TIPO_COLORS_PLAN={'Fondeada':'#06D6A0','Challenge':'#FFD23F','Evaluation':'#118AB2','PA':'#7B61FF','Live':'#FF6B35','Otro':'#888'};
+const PLAN_PALETTE=['#FF6B35','#7B61FF','#06D6A0','#118AB2','#EF476F','#FFD23F','#9B5DE5','#2EC4B6'];
+const TODAY_DOW=new Date().getDay();
+const HOY_IDX=TODAY_DOW>=1&&TODAY_DOW<=5?TODAY_DOW-1:-1;
+
+let activeDiaPlan=HOY_IDX>=0?HOY_IDX:0;
+let planData=[];
+let planEditId=null;
+let planSelColor=PLAN_PALETTE[0];
+let planSelDias=[];
+
+const PLAN_DEFAULT=[
+  {id:'p1',empresa:'Apex',nombre:'Alpha',tipo:'Fondeada',color:'#7B61FF',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
+  {id:'p2',empresa:'Fundednext',nombre:'Fury 2.0',tipo:'Challenge',color:'#FF6B35',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
+  {id:'p3',empresa:'Lucid',nombre:'Fury',tipo:'Challenge',color:'#06D6A0',dias:[0,1,2,3,4],instrumento:'MES',ticks:'2300',rr:'1:0.24',riesgo:'$1.000',maxTrades:'2'}
+];
+
+function savePlan(){try{localStorage.setItem('tj_plan',JSON.stringify(planData))}catch(e){}}
+function loadPlan(){try{const d=localStorage.getItem('tj_plan');planData=d?JSON.parse(d):JSON.parse(JSON.stringify(PLAN_DEFAULT))}catch(e){planData=JSON.parse(JSON.stringify(PLAN_DEFAULT))}}
+loadPlan();
+
+function buildDiasBtnsPlan(){
+  document.getElementById('dias-btns-plan').innerHTML=DIAS_SEMANA.map((d,i)=>`
+    <button class="dia-btn${activeDiaPlan===i?' active':''}${HOY_IDX===i?' hoy':''}" onclick="setDiaPlan(${i})">
+      ${d}${HOY_IDX===i?'<span class="hoy-badge">hoy</span>':''}
+    </button>`).join('');
+}
+
+function setDiaPlan(i){activeDiaPlan=i;buildDiasBtnsPlan();renderPlanDia()}
+
+function renderPlanDia(){
+  const diaName=DIAS_SEMANA[activeDiaPlan];
+  const cuentas=planData.filter(p=>p.dias.includes(activeDiaPlan));
+  const isHoy=HOY_IDX===activeDiaPlan;
+  document.getElementById('plan-content').innerHTML=`
+    <div class="plan-header">
+      <div class="plan-title">Cuentas — ${diaName}${isHoy?` <span class="hoy-badge">hoy</span>`:''}</div>
+      <button class="btn-add" onclick="openPlanModal(null)" style="font-size:12px;padding:6px 16px">+ Agregar cuenta</button>
+    </div>
+    ${cuentas.length
+      ?`<div class="cuentas-plan-grid">${cuentas.map(p=>planCardHTML(p)).join('')}</div>`
+      :`<div class="plan-empty">No hay cuentas para ${diaName}.<br>Haz clic en "+ Agregar cuenta".</div>`}`;
+}
+
+function planCardHTML(p){
+  const tc=TIPO_COLORS_PLAN[p.tipo]||'#888';
+  return`<div class="plan-card" style="border-left:3px solid ${p.color}">
+    <div class="plan-card-header">
+      <span class="plan-card-emp">${p.empresa.toUpperCase()}</span>
+      <span class="plan-card-tipo" style="background:${tc}22;color:${tc}">${p.tipo}</span>
+    </div>
+    <div class="plan-card-nombre">${p.nombre}</div>
+    <div class="plan-params">
+      <div class="pp"><div class="ppl">Instrumento</div><div class="ppv">${p.instrumento||'—'}</div></div>
+      <div class="pp"><div class="ppl">Ticks</div><div class="ppv">${p.ticks||'—'}</div></div>
+      <div class="pp"><div class="ppl">RR</div><div class="ppv">${p.rr||'—'}</div></div>
+      <div class="pp"><div class="ppl">Riesgo</div><div class="ppv">${p.riesgo||'—'}</div></div>
+      <div class="pp full"><div class="ppl">Max. trades / dia</div><div class="ppv">${p.maxTrades||'—'}</div></div>
+    </div>
+    <div class="plan-actions">
+      <button class="plan-btn-edit" onclick="openPlanModal('${p.id}')">Editar</button>
+      <button class="plan-btn-rem" onclick="quitarDiaPlan('${p.id}',${activeDiaPlan})">Quitar dia</button>
+    </div>
+  </div>`;
+}
+
+function quitarDiaPlan(id,dia){
+  const p=planData.find(x=>x.id===id);if(!p)return;
+  p.dias=p.dias.filter(d=>d!==dia);
+  if(!p.dias.length){if(!confirm('Esta cuenta ya no tiene dias activos. ¿Eliminarla?'))return;planData=planData.filter(x=>x.id!==id)}
+  savePlan();renderPlanDia();
+}
+
+function openPlanModal(id){
+  planEditId=id;
+  const p=id?planData.find(x=>x.id===id):null;
+  planSelColor=p?p.color:PLAN_PALETTE[0];
+  planSelDias=p?[...p.dias]:[activeDiaPlan];
+  document.body.insertAdjacentHTML('beforeend',`<div class="plan-modal-bg" id="plan-modal-bg" onclick="closePlanModal()">
+    <div class="plan-modal" onclick="event.stopPropagation()">
+      <button class="plan-modal-close" onclick="closePlanModal()">×</button>
+      <h3>${id?'Editar cuenta':'Nueva cuenta'}</h3>
+      <div class="pf"><label>Empresa</label><input id="pm-emp" value="${p?p.empresa:''}" placeholder="ej: Apex"/></div>
+      <div class="pf"><label>Nombre / Estrategia</label><input id="pm-nom" value="${p?p.nombre:''}" placeholder="ej: Alpha"/></div>
+      <div class="pf"><label>Tipo</label>
+        <select id="pm-tipo">${['Fondeada','Challenge','Evaluation','PA','Live','Otro'].map(t=>`<option${p&&p.tipo===t?' selected':''}>${t}</option>`).join('')}</select>
+      </div>
+      <div class="pf"><label>Color</label>
+        <div class="color-row" id="pm-colors">
+          ${PLAN_PALETTE.map(c=>`<div class="co${c===planSelColor?' sel':''}" style="background:${c}" onclick="pickPlanColor('${c}')"></div>`).join('')}
+        </div>
+      </div>
+      <div class="pf-grid">
+        <div class="pf"><label>Instrumento</label><input id="pm-inst" value="${p?p.instrumento:''}" placeholder="ej: NQ"/></div>
+        <div class="pf"><label>Ticks</label><input id="pm-ticks" value="${p?p.ticks:''}" placeholder="ej: 2300"/></div>
+        <div class="pf"><label>RR</label><input id="pm-rr" value="${p?p.rr:''}" placeholder="ej: 1:0.5"/></div>
+        <div class="pf"><label>Riesgo</label><input id="pm-riesgo" value="${p?p.riesgo:''}" placeholder="ej: $400"/></div>
+      </div>
+      <div class="pf"><label>Max. trades / dia</label><input id="pm-max" value="${p?p.maxTrades:''}" placeholder="ej: 1"/></div>
+      <div class="pf"><label>Dias activos</label>
+        <div class="dias-check" id="pm-dias">
+          ${DIAS_SEMANA.map((d,i)=>`<div class="dc${planSelDias.includes(i)?' sel':''}" onclick="toggleDiaPlan(${i})">${d}</div>`).join('')}
+        </div>
+      </div>
+      <div class="plan-modal-footer">
+        <button class="pm-cancel" onclick="closePlanModal()">Cancelar</button>
+        <button class="pm-save" onclick="savePlanModal()">Guardar</button>
+      </div>
+    </div></div>`);
+}
+
+function pickPlanColor(c){
+  planSelColor=c;
+  document.querySelectorAll('#pm-colors .co').forEach(el=>el.classList.toggle('sel',el.style.background===c));
+}
+
+function toggleDiaPlan(i){
+  if(planSelDias.includes(i))planSelDias=planSelDias.filter(d=>d!==i);
+  else planSelDias.push(i);
+  document.querySelectorAll('#pm-dias .dc').forEach((el,idx)=>el.classList.toggle('sel',planSelDias.includes(idx)));
+}
+
+function savePlanModal(){
+  const emp=document.getElementById('pm-emp').value.trim();
+  const nom=document.getElementById('pm-nom').value.trim();
+  if(!emp||!nom){alert('Completa empresa y nombre');return}
+  const data={empresa:emp,nombre:nom,tipo:document.getElementById('pm-tipo').value,color:planSelColor,dias:planSelDias,
+    instrumento:document.getElementById('pm-inst').value.trim(),ticks:document.getElementById('pm-ticks').value.trim(),
+    rr:document.getElementById('pm-rr').value.trim(),riesgo:document.getElementById('pm-riesgo').value.trim(),
+    maxTrades:document.getElementById('pm-max').value.trim()};
+  if(planEditId){Object.assign(planData.find(x=>x.id===planEditId),data)}
+  else{planData.push({id:genId(),...data})}
+  savePlan();closePlanModal();renderPlanDia();
+}
+
+function closePlanModal(){const m=document.getElementById('plan-modal-bg');if(m)m.remove()}
+
+// ===================== END PLAN SEMANAL =====================
 
 buildEmpPills();
 renderCalendar();
