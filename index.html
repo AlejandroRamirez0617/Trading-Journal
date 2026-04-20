@@ -769,9 +769,9 @@ let planSelColor=PLAN_PALETTE[0];
 let planSelDias=[];
 
 const PLAN_DEFAULT=[
-  {id:'p1',empresa:'Apex',nombre:'Alpha',tipo:'Fondeada',color:'#7B61FF',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
-  {id:'p2',empresa:'Fundednext',nombre:'Fury 2.0',tipo:'Challenge',color:'#FF6B35',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
-  {id:'p3',empresa:'Lucid',nombre:'Fury',tipo:'Challenge',color:'#06D6A0',dias:[0,1,2,3,4],instrumento:'MES',ticks:'2300',rr:'1:0.24',riesgo:'$1.000',maxTrades:'2'}
+  {id:'p1',empresa:'Apex',cuenta:'PA02',nombre:'Alpha',tipo:'Fondeada',color:'#7B61FF',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
+  {id:'p2',empresa:'Fundednext',cuenta:'Bolt',nombre:'Fury 2.0',tipo:'Challenge',color:'#FF6B35',dias:[0,1,2,3,4],instrumento:'NQ',ticks:'N/A',rr:'1:0.5',riesgo:'$400',maxTrades:'1'},
+  {id:'p3',empresa:'Lucid',cuenta:'Lucidflex',nombre:'Fury',tipo:'Challenge',color:'#06D6A0',dias:[0,1,2,3,4],instrumento:'MES',ticks:'2300',rr:'1:0.24',riesgo:'$1.000',maxTrades:'2'}
 ];
 
 function savePlan(){try{localStorage.setItem('tj_plan',JSON.stringify(planData))}catch(e){}}
@@ -805,7 +805,7 @@ function planCardHTML(p){
   const tc=TIPO_COLORS_PLAN[p.tipo]||'#888';
   return`<div class="plan-card" style="border-left:3px solid ${p.color}">
     <div class="plan-card-header">
-      <span class="plan-card-emp">${p.empresa.toUpperCase()}</span>
+      <span class="plan-card-emp">${p.empresa.toUpperCase()}${p.cuenta?' · '+p.cuenta:''}</span>
       <span class="plan-card-tipo" style="background:${tc}22;color:${tc}">${p.tipo}</span>
     </div>
     <div class="plan-card-nombre">${p.nombre}</div>
@@ -840,6 +840,7 @@ function openPlanModal(id){
       <button class="plan-modal-close" onclick="closePlanModal()">×</button>
       <h3>${id?'Editar cuenta':'Nueva cuenta'}</h3>
       <div class="pf"><label>Empresa</label><input id="pm-emp" value="${p?p.empresa:''}" placeholder="ej: Apex"/></div>
+      <div class="pf"><label>Cuenta</label><input id="pm-cuenta" value="${p?p.cuenta||'':''}" placeholder="ej: PA02, Challenge10"/></div>
       <div class="pf"><label>Nombre / Estrategia</label><input id="pm-nom" value="${p?p.nombre:''}" placeholder="ej: Alpha"/></div>
       <div class="pf"><label>Tipo</label>
         <select id="pm-tipo">${['Fondeada','Challenge','Evaluation','PA','Live','Otro'].map(t=>`<option${p&&p.tipo===t?' selected':''}>${t}</option>`).join('')}</select>
@@ -883,7 +884,7 @@ function savePlanModal(){
   const emp=document.getElementById('pm-emp').value.trim();
   const nom=document.getElementById('pm-nom').value.trim();
   if(!emp||!nom){alert('Completa empresa y nombre');return}
-  const data={empresa:emp,nombre:nom,tipo:document.getElementById('pm-tipo').value,color:planSelColor,dias:planSelDias,
+  const data={empresa:emp,nombre:nom,cuenta:document.getElementById('pm-cuenta').value.trim(),tipo:document.getElementById('pm-tipo').value,color:planSelColor,dias:planSelDias,
     instrumento:document.getElementById('pm-inst').value.trim(),ticks:document.getElementById('pm-ticks').value.trim(),
     rr:document.getElementById('pm-rr').value.trim(),riesgo:document.getElementById('pm-riesgo').value.trim(),
     maxTrades:document.getElementById('pm-max').value.trim()};
