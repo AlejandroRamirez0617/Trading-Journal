@@ -1012,4 +1012,396 @@ function renderHistorial(){
   const fs=document.getElementById('fil-strat')?.value||'';
   const fe=document.getElementById('fil-emp')?.value||'';
   const fc=document.getElementById('fil-cuenta')?.value||'';
-  const fr=document.getElementByI
+  const fr=document.getElementById('fil-res')?.value||'';
+  let data=ops.filter(o=>{
+    if(fs&&o.strat!==fs)return false;
+    if(fe&&o.empresaId!==fe)return false;
+    if(fc&&o.cuentaId!==fc)return false;
+    if(fr==='pos'&&o.pct<0)return false;
+    if(fr==='neg'&&o.pct>=0)return false;
+    return true;
+  });
+  const el=document.getElementById('historial-content');
+  if(!data.length){el.innerHTML=`<div class="empty">Sin operaciones registradas</div>`;return}
+  const tp=data.reduce((a,o)=>a+o.pct,0);
+  const wins=data.filter(o=>o.pct>=0).length;
+  el.innerHTML=`
+  <div class="metrics">
+    <div class="metric blue"><div class="ml">Total ops</div><div class="mv neu">${data.length}</div></div>
+    <div class="metric ${tp>=0?'green':'red'}"><div class="ml">% acumulado</div><div class="mv ${tp>=0?'pos':'neg'}">${fmt(tp)}%</div></div>
+    <div class="metric orange"><div class="ml">Win rate</div><div class="mv neu">${Math.round(wins/data.length*100)}%</div></div>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr><th>Fecha</th><th>Estrategia</th><th>Empresa</th><th>Par</th><th>%</th><th>$</th><th>Notas</th><th></th></tr></thead>
+    <tbody>${data.map(o=>`<tr>
+      <td>${o.fecha}</td>
+      <td class="nc"><span class="sdot" style="background:${getStratColor(o.strat)}"></span>${o.strat}</td>
+      <td>${empBadge(o)}</td><td>${o.par}</td>
+      <td><span class="badge ${o.pct>=0?'pos':'neg'}">${fmt(o.pct)}%</span></td>
+      <td>${o.usd!==null?`<span class="${o.usd>=0?'pos':'neg'}">${fmtU(o.usd)}</span>`:'—'}</td>
+      <td style="font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--txt2);max-width:120px;white-space:normal">${o.nota||'—'}</td>
+      <td><button class="del-btn" onclick="deleteOp(${o.id});renderHistorial()">×</button></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function renderMeses(){
+  const el=document.getElementById('meses-content');
+  if(!ops.length){el.innerHTML=`<div class="empty">Sin operaciones</div>`;return}
+  const grouped={};
+  ops.forEach(o=>{const k=o.fecha.slice(0,7);if(!grouped[k])grouped[k]=[];grouped[k].push(o)});
+  el.innerHTML=Object.keys(grouped).sort((a,b)=>b.localeCompare(a)).map(k=>{
+    const list=grouped[k],[yr,mo]=k.split('-');
+    const tp=list.reduce((a,o)=>a+o.pct,0);
+    const wins=list.filter(o=>o.pct>=0).length;
+    return`<div class="month-group">
+      <div class="month-title">${MONTHS_ES[parseInt(mo)-1]} ${yr}
+        <span class="mt-sum ${tp>=0?'pos':'neg'}">${fmt(tp)}%</span>
+        <span style="font-size:11px;color:var(--txt2);font-family:'JetBrains Mono',monospace">${list.length} ops · WR ${Math.round(wins/list.length*100)}%</span>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Dia</th><th>Estrategia</th><th>Empresa</th><th>Par</th><th>%</th><th>$</th><th>Notas</th></tr></thead>
+        <tbody>${list.map(o=>`<tr>
+          <td>${o.fecha.slice(8)}</td>
+          <td class="nc"><span class="sdot" style="background:${getStratColor(o.strat)}"></span>${o.strat}</td>
+          <td>${empBadge(o)}</td><td>${o.par}</td>
+          <td><span class="badge ${o.pct>=0?'pos':'neg'}">${fmt(o.pct)}%</span></td>
+          <td>${o.usd!==null?`<span class="${o.usd>=0?'pos':'neg'}">${fmtU(o.usd)}</span>`:'—'}</td>
+          <td style="font-family:'Space Grotesk',sans-serif;font-size:12px;color:var(--txt2);max-width:120px;white-space:normal">${o.nota||'—'}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+}
+
+function setSegment(seg,btn){statsSegment=seg;document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderStats()}
+function renderStats(){
+  const el=document.getElementById('stats-content');
+  const nowM=new Date().getMonth(),nowY=new Date().getFullYear();
+  const filtered=statsSegment==='mes'?ops.filter(o=>o.fecha.startsWith(nowY+'-'+String(nowM+1).padStart(2,'0'))):ops;
+  const stratTotals={};estrategias.forEach(s=>stratTotals[s.name]=0);
+  filtered.forEach(o=>{if(stratTotals[o.strat]!==undefined)stratTotals[o.strat]+=o.pct;else stratTotals[o.strat]=(stratTotals[o.strat]||0)+o.pct});
+  const ranked=Object.keys(stratTotals).map(n=>({name:n,val:stratTotals[n]})).sort((a,b)=>b.val-a.val);
+  const monthKeys=[...new Set(ops.map(o=>o.fecha.slice(0,7)))].sort();
+  const monthLabels=monthKeys.map(k=>MONTHS_SHORT[parseInt(k.split('-')[1])-1]);
+  const mkD=s=>monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s&&o.fecha.startsWith(k));return mo.length?+mo.reduce((a,o)=>a+o.pct,0).toFixed(2):null});
+  const mkC=s=>{let c=0;return monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s&&o.fecha.startsWith(k));if(mo.length){c+=mo.reduce((a,o)=>a+o.pct,0);return+c.toFixed(2)}return null})};
+  const hasM=monthKeys.length>0;
+  el.innerHTML=`
+  <div class="ranking-grid">${ranked.slice(0,4).map((r,i)=>{const nums=['r1','r2','r3','r4'],labs=['1°','2°','3°','4°'];return`
+    <div class="rank-card" style="border-left:3px solid ${getStratColor(r.name)}">
+      <div class="rank-num ${nums[i]||'r4'}">${labs[i]||'—'}</div>
+      <div class="rank-info"><div class="rn">${r.name}</div><div class="rv ${r.val>=0?'pos':'neg'}">${fmt(r.val)}%</div></div>
+    </div>`}).join('')}
+  </div>
+  ${hasM?`
+  <div class="chart-wrap"><h3>Rendimiento mensual por estrategia</h3>
+    <div class="legend">${estrategias.map(s=>`<div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div>${s.name}</div>`).join('')}</div>
+    <div class="chart-h tall"><canvas id="ch-line"></canvas></div>
+  </div>
+  <div class="chart-wrap"><h3>Retorno acumulado por estrategia</h3>
+    <div class="legend">${estrategias.map(s=>`<div class="legend-item"><div class="legend-dot" style="background:${s.color}"></div>${s.name}</div>`).join('')}</div>
+    <div class="chart-h tall"><canvas id="ch-cum"></canvas></div>
+  </div>
+  <div class="chart-wrap"><h3>Comparativa por mes</h3>
+    <div class="chart-h tall"><canvas id="ch-bar"></canvas></div>
+  </div>`:`<div class="empty">Registra operaciones para ver las graficas</div>`}`;
+  if(!hasM)return;
+  setTimeout(()=>{
+    destroyChart('line');destroyChart('cum');destroyChart('bar');
+    const gc='rgba(255,255,255,.05)',tc='#555';
+    const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+'%'}}}};
+    const mkDs=fn=>estrategias.map(s=>({label:s.name,data:fn(s.name),borderColor:s.color,backgroundColor:'transparent',tension:0.4,borderWidth:2.5,pointRadius:4,pointBackgroundColor:s.color,spanGaps:false}));
+    const c1=document.getElementById('ch-line');if(c1)chartRefs['line']=new Chart(c1,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkD)},options:base});
+    const c2=document.getElementById('ch-cum');if(c2)chartRefs['cum']=new Chart(c2,{type:'line',data:{labels:monthLabels,datasets:mkDs(mkC)},options:base});
+    const c3=document.getElementById('ch-bar');if(c3)chartRefs['bar']=new Chart(c3,{type:'bar',data:{labels:monthLabels,datasets:estrategias.map(s=>({label:s.name,data:monthKeys.map(k=>{const mo=ops.filter(o=>o.strat===s.name&&o.fecha.startsWith(k));return mo.length?+mo.reduce((a,o)=>a+o.pct,0).toFixed(2):0}),backgroundColor:s.color+'BB',borderRadius:4,borderSkipped:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:10,padding:12,color:tc}}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>v+'%'}}}}});
+  },80);
+}
+
+function renderCuentas(){
+  const el=document.getElementById('empresas-list');
+  if(!empresas.length){el.innerHTML=`<div class="empty">Sin empresas.</div>`;return}
+  el.innerHTML=empresas.map(emp=>`
+    <div class="empresa-card">
+      <div class="empresa-header">
+        <div class="empresa-name"><div class="emp-dot" style="background:${emp.color}"></div><div class="empresa-title">${emp.name}</div><span style="font-size:11px;color:var(--txt3);font-family:'JetBrains Mono',monospace">${emp.cuentas.length} cuenta${emp.cuentas.length!==1?'s':''}</span></div>
+        <button class="btn btn-danger btn-sm" onclick="deleteEmpresa('${emp.id}')">Eliminar</button>
+      </div>
+      <div class="cuentas-grid">
+        ${emp.cuentas.length?emp.cuentas.map(c=>`<div class="cuenta-chip"><span>${c.name}</span><span class="tipo">${c.tipo}</span><button class="del-c" onclick="deleteCuenta('${emp.id}','${c.id}')">×</button></div>`).join(''):`<span class="hint-txt">Sin cuentas</span>`}
+      </div>
+      <div class="add-cuenta-row">
+        <input type="text" id="nc-name-${emp.id}" placeholder="Nombre cuenta"/>
+        <select id="nc-tipo-${emp.id}"><option>PA</option><option>Challenge</option><option>Evaluation</option><option>Live</option><option>Otro</option></select>
+        <button class="btn btn-ghost btn-sm" onclick="addCuenta('${emp.id}')">+ Agregar</button>
+      </div>
+    </div>`).join('');
+}
+function addEmpresa(){
+  const name=document.getElementById('new-emp-name').value.trim();
+  const msg=document.getElementById('emp-msg');
+  if(!name){msg.style.color='var(--red)';msg.textContent='Escribe el nombre';setTimeout(()=>msg.textContent='',2000);return}
+  if(empresas.find(e=>e.name.toLowerCase()===name.toLowerCase())){msg.style.color='var(--red)';msg.textContent='Ya existe';setTimeout(()=>msg.textContent='',2000);return}
+  empresas.push({id:genId(),name,color:selColor,cuentas:[]});
+  saveAll();document.getElementById('new-emp-name').value='';
+  msg.style.color='var(--green2)';msg.textContent='Agregada!';setTimeout(()=>msg.textContent='',2000);
+  renderCuentas();buildEmpPills();
+}
+function deleteEmpresa(id){if(!confirm('Eliminar empresa?'))return;empresas=empresas.filter(e=>e.id!==id);saveAll();renderCuentas();buildEmpPills()}
+function addCuenta(empId){
+  const nameEl=document.getElementById('nc-name-'+empId);
+  const tipoEl=document.getElementById('nc-tipo-'+empId);
+  const name=nameEl.value.trim();if(!name)return;
+  const emp=getEmp(empId);if(!emp)return;
+  emp.cuentas.push({id:genId(),name,tipo:tipoEl.value});
+  saveAll();nameEl.value='';renderCuentas();buildEmpPills();
+}
+function deleteCuenta(empId,cId){
+  const emp=getEmp(empId);if(!emp)return;
+  if(!confirm('Eliminar cuenta?'))return;
+  emp.cuentas=emp.cuentas.filter(c=>c.id!==cId);
+  saveAll();renderCuentas();buildEmpPills();
+}
+
+function buildDiasBtnsPlan(){
+  document.getElementById('dias-btns-plan').innerHTML=DIAS_SEMANA.map((d,i)=>`
+    <button class="dia-btn${activeDiaPlan===i?' active':''}${HOY_IDX===i?' hoy':''}" onclick="setDiaPlan(${i})">
+      ${d}${HOY_IDX===i?'<span class="hoy-badge">hoy</span>':''}
+    </button>`).join('');
+}
+function setDiaPlan(i){activeDiaPlan=i;buildDiasBtnsPlan();renderPlanDia()}
+function renderPlanDia(){
+  const diaName=DIAS_SEMANA[activeDiaPlan];
+  const cuentas=planData.filter(p=>p.params&&p.params[activeDiaPlan]!==undefined);
+  document.getElementById('plan-content').innerHTML=`
+    <div class="plan-header">
+      <div class="plan-title">Cuentas — ${diaName}${HOY_IDX===activeDiaPlan?' <span class="hoy-badge">hoy</span>':''}</div>
+      <button class="btn btn-primary btn-sm" onclick="openPlanModalNueva()">+ Agregar</button>
+    </div>
+    ${cuentas.length?`<div class="cuentas-plan-grid">${cuentas.map(p=>planCardHTML(p,activeDiaPlan)).join('')}</div>`:`<div class="plan-empty">No hay cuentas para ${diaName}.</div>`}`;
+}
+function planCardHTML(p,dia){
+  const tc=TIPO_COLORS[p.tipo]||'#888';const pr=p.params[dia]||{};
+  return`<div class="plan-card" style="border-left:3px solid ${p.color}">
+    <div class="plan-card-header"><span class="plan-card-emp">${p.empresa.toUpperCase()}${p.cuenta?' · '+p.cuenta:''}</span><span class="plan-card-tipo" style="background:${tc}22;color:${tc}">${p.tipo}</span></div>
+    <div class="plan-card-nombre">${p.nombre}</div>
+    <div class="plan-params">
+      <div class="pp"><div class="ppl">Instrumento</div><div class="ppv">${pr.instrumento||'—'}</div></div>
+      <div class="pp"><div class="ppl">Ticks</div><div class="ppv">${pr.ticks||'—'}</div></div>
+      <div class="pp"><div class="ppl">RR</div><div class="ppv">${pr.rr||'—'}</div></div>
+      <div class="pp"><div class="ppl">Riesgo</div><div class="ppv">${pr.riesgo||'—'}</div></div>
+      <div class="pp full"><div class="ppl">Max trades/dia</div><div class="ppv">${pr.maxTrades||'—'}</div></div>
+    </div>
+    <div class="plan-actions"><button class="plan-btn-edit" onclick="openPlanModalEditar('${p.id}',${dia})">Editar</button><button class="plan-btn-rem" onclick="quitarDiaPlan('${p.id}',${dia})">Quitar dia</button></div>
+  </div>`;
+}
+function quitarDiaPlan(id,dia){
+  const p=planData.find(x=>x.id===id);if(!p)return;
+  delete p.params[dia];
+  if(!Object.keys(p.params).length){if(!confirm('Sin dias. Eliminar?'))return;planData=planData.filter(x=>x.id!==id)}
+  saveAll();renderPlanDia();
+}
+function openPlanModalNueva(){
+  planEditId=null;planEditDia=null;planSelColor=PLAN_PALETTE[0];
+  const diasHtml=DIAS_SEMANA.map((d,i)=>`
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer" onclick="togglePlanDiaSection(${i})">
+        <div id="dc-check-${i}" style="width:16px;height:16px;border-radius:4px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px"></div>
+        <span style="font-size:13px;font-weight:600">${d}</span>
+      </div>
+      <div id="dc-params-${i}" style="display:none;grid-template-columns:1fr 1fr;gap:6px">
+        <div class="pf"><label>Instrumento</label><input id="pn-inst-${i}" placeholder="NQ"/></div>
+        <div class="pf"><label>Ticks</label><input id="pn-ticks-${i}" placeholder="2300"/></div>
+        <div class="pf"><label>RR</label><input id="pn-rr-${i}" placeholder="1:0.5"/></div>
+        <div class="pf"><label>Riesgo</label><input id="pn-riesgo-${i}" placeholder="$400"/></div>
+        <div class="pf" style="grid-column:1/-1"><label>Max trades</label><input id="pn-max-${i}" placeholder="1"/></div>
+      </div>
+    </div>`).join('');
+  document.body.insertAdjacentHTML('beforeend',`<div class="plan-modal-bg" id="plan-modal-bg" onclick="closePlanModal()">
+    <div class="plan-modal" onclick="event.stopPropagation()">
+      <button class="plan-modal-close" onclick="closePlanModal()">×</button>
+      <h3>Nueva cuenta en plan</h3>
+      <div class="pf"><label>Empresa</label><input id="pm-emp" placeholder="Apex"/></div>
+      <div class="pf"><label>Cuenta</label><input id="pm-cuenta" placeholder="PA02"/></div>
+      <div class="pf"><label>Estrategia</label><input id="pm-nom" placeholder="Alpha"/></div>
+      <div class="pf"><label>Tipo</label><select id="pm-tipo">${['Fondeada','Challenge','Evaluation','PA','Live','Otro'].map(t=>`<option>${t}</option>`).join('')}</select></div>
+      <div class="pf"><label>Color</label><div class="color-row" id="pm-colors">${PLAN_PALETTE.map(c=>`<div class="co${c===planSelColor?' sel':''}" style="background:${c}" onclick="pickPlanColor('${c}')"></div>`).join('')}</div></div>
+      <div class="pf"><label>Dias y parametros</label>${diasHtml}</div>
+      <div class="pm-footer"><button class="btn btn-ghost" onclick="closePlanModal()">Cancelar</button><button class="btn btn-primary" onclick="savePlanModalNueva()">Guardar</button></div>
+    </div></div>`);
+}
+function togglePlanDiaSection(i){
+  const check=document.getElementById('dc-check-'+i);
+  const params=document.getElementById('dc-params-'+i);
+  const active=params.style.display==='grid';
+  params.style.display=active?'none':'grid';
+  check.style.background=active?'transparent':'var(--orange)';check.innerHTML=active?'':'✓';
+}
+function openPlanModalEditar(id,dia){
+  planEditId=id;planEditDia=dia;
+  const p=planData.find(x=>x.id===id);if(!p)return;
+  planSelColor=p.color;const pr=p.params[dia]||{};
+  document.body.insertAdjacentHTML('beforeend',`<div class="plan-modal-bg" id="plan-modal-bg" onclick="closePlanModal()">
+    <div class="plan-modal" onclick="event.stopPropagation()">
+      <button class="plan-modal-close" onclick="closePlanModal()">×</button>
+      <h3>Editar — ${p.nombre} · ${DIAS_SEMANA[dia]}</h3>
+      <div class="pf"><label>Empresa</label><input id="pm-emp" value="${p.empresa}"/></div>
+      <div class="pf"><label>Cuenta</label><input id="pm-cuenta" value="${p.cuenta||''}"/></div>
+      <div class="pf"><label>Estrategia</label><input id="pm-nom" value="${p.nombre}"/></div>
+      <div class="pf"><label>Tipo</label><select id="pm-tipo">${['Fondeada','Challenge','Evaluation','PA','Live','Otro'].map(t=>`<option${p.tipo===t?' selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="pf"><label>Color</label><div class="color-row" id="pm-colors">${PLAN_PALETTE.map(c=>`<div class="co${c===planSelColor?' sel':''}" style="background:${c}" onclick="pickPlanColor('${c}')"></div>`).join('')}</div></div>
+      <div style="background:var(--bg3);border:1px solid rgba(249,115,22,.3);border-radius:10px;padding:12px;margin-bottom:10px">
+        <div style="font-size:11px;color:var(--orange);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;font-weight:700">Params — ${DIAS_SEMANA[dia]}</div>
+        <div class="pf-grid">
+          <div class="pf"><label>Instrumento</label><input id="pm-inst" value="${pr.instrumento||''}"/></div>
+          <div class="pf"><label>Ticks</label><input id="pm-ticks" value="${pr.ticks||''}"/></div>
+          <div class="pf"><label>RR</label><input id="pm-rr" value="${pr.rr||''}"/></div>
+          <div class="pf"><label>Riesgo</label><input id="pm-riesgo" value="${pr.riesgo||''}"/></div>
+        </div>
+        <div class="pf"><label>Max trades</label><input id="pm-max" value="${pr.maxTrades||''}"/></div>
+      </div>
+      <div style="font-size:11px;color:var(--txt2);margin-bottom:8px;font-weight:600">Aplicar tambien a:</div>
+      <div class="dias-check" id="pm-copiar-dias">${DIAS_SEMANA.map((d,i)=>`<div class="dc${i===dia?' sel':''}" onclick="toggleCopyDia(${i})" data-d="${i}">${d}</div>`).join('')}</div>
+      <div class="pm-footer"><button class="btn btn-ghost" onclick="closePlanModal()">Cancelar</button><button class="btn btn-primary" onclick="savePlanModalEditar()">Guardar</button></div>
+    </div></div>`);
+}
+function toggleCopyDia(i){document.querySelectorAll('#pm-copiar-dias .dc').forEach(el=>{if(parseInt(el.dataset.d)===i)el.classList.toggle('sel')})}
+function pickPlanColor(c){planSelColor=c;document.querySelectorAll('#pm-colors .co').forEach(el=>el.classList.toggle('sel',el.style.background===c))}
+function savePlanModalNueva(){
+  const emp=document.getElementById('pm-emp').value.trim();
+  const nom=document.getElementById('pm-nom').value.trim();
+  if(!emp||!nom){alert('Completa empresa y estrategia');return}
+  const params={};
+  DIAS_SEMANA.forEach((_,i)=>{const pe=document.getElementById('dc-params-'+i);if(pe&&pe.style.display==='grid'){params[i]={instrumento:document.getElementById('pn-inst-'+i)?.value.trim()||'',ticks:document.getElementById('pn-ticks-'+i)?.value.trim()||'',rr:document.getElementById('pn-rr-'+i)?.value.trim()||'',riesgo:document.getElementById('pn-riesgo-'+i)?.value.trim()||'',maxTrades:document.getElementById('pn-max-'+i)?.value.trim()||''}}});
+  if(!Object.keys(params).length){alert('Selecciona al menos un dia');return}
+  planData.push({id:genId(),empresa:emp,cuenta:document.getElementById('pm-cuenta').value.trim(),nombre:nom,tipo:document.getElementById('pm-tipo').value,color:planSelColor,params});
+  saveAll();closePlanModal();renderPlanDia();
+}
+function savePlanModalEditar(){
+  const p=planData.find(x=>x.id===planEditId);if(!p)return;
+  p.empresa=document.getElementById('pm-emp').value.trim();
+  p.cuenta=document.getElementById('pm-cuenta').value.trim();
+  p.nombre=document.getElementById('pm-nom').value.trim();
+  p.tipo=document.getElementById('pm-tipo').value;
+  p.color=planSelColor;
+  const pr={instrumento:document.getElementById('pm-inst').value.trim(),ticks:document.getElementById('pm-ticks').value.trim(),rr:document.getElementById('pm-rr').value.trim(),riesgo:document.getElementById('pm-riesgo').value.trim(),maxTrades:document.getElementById('pm-max').value.trim()};
+  document.querySelectorAll('#pm-copiar-dias .dc.sel').forEach(el=>{p.params[parseInt(el.dataset.d)]={...pr}});
+  saveAll();closePlanModal();renderPlanDia();
+}
+function closePlanModal(){const m=document.getElementById('plan-modal-bg');if(m)m.remove()}
+
+const EMP_COLORS_FIN={'Apex':'#a78bfa','Fundednext':'#f97316','Lucid':'#22d3ee','FTMO':'#3b82f6','MFF':'#fbbf24','Topstep':'#8b5cf6','Otro':'#888'};
+function renderFinanzas(){
+  const el=document.getElementById('finanzas-content');
+  let data=finanzas.filter(f=>{
+    if(finFiltroEmp&&f.empresa!==finFiltroEmp)return false;
+    if(finFiltroEstado&&f.estado!==finFiltroEstado)return false;
+    return true;
+  });
+  const totalInv=finanzas.reduce((a,f)=>a+(parseFloat(f.valor)||0),0);
+  const totalBen=finanzas.reduce((a,f)=>a+(parseFloat(f.beneficios)||0),0);
+  const neta=totalBen-totalInv;
+  const pasadas=finanzas.filter(f=>f.estado==='Pasada').length;
+  const quemadas=finanzas.filter(f=>f.estado==='Quemada').length;
+  const fin2=pasadas+quemadas;
+  const tasaExito=fin2>0?Math.round(pasadas/fin2*100):0;
+  const enProceso=finanzas.filter(f=>f.estado==='En proceso').length;
+  const empOpts=EMPRESAS_FIN.map(e=>`<option value="${e}"${finFiltroEmp===e?' selected':''}>${e}</option>`).join('');
+  const estOpts=ESTADOS_FIN.map(e=>`<option value="${e}"${finFiltroEstado===e?' selected':''}>${e}</option>`).join('');
+  el.innerHTML=`
+  <div class="metrics" style="margin-bottom:1.5rem">
+    <div class="metric red"><div class="ml">Total invertido</div><div class="mv neg">-$${totalInv.toLocaleString()}</div><div class="ms">${finanzas.length} cuentas</div></div>
+    <div class="metric green"><div class="ml">Beneficios</div><div class="mv pos">+$${totalBen.toLocaleString()}</div><div class="ms">${pasadas} pasadas</div></div>
+    <div class="metric ${neta>=0?'green':'red'}"><div class="ml">Neta</div><div class="mv ${neta>=0?'pos':'neg'}">${neta>=0?'+':''}&dollar;${Math.abs(neta).toLocaleString()}</div></div>
+    <div class="metric orange"><div class="ml">Tasa exito</div><div class="mv neu">${tasaExito}%</div><div class="ms">${pasadas}P · ${quemadas}Q</div></div>
+    <div class="metric blue"><div class="ml">En proceso</div><div class="mv" style="color:var(--blue)">${enProceso}</div></div>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px">
+    <div class="filter-row" style="margin-bottom:0">
+      <select onchange="finFiltroEmp=this.value;renderFinanzas()"><option value="">Todas las empresas</option>${empOpts}</select>
+      <select onchange="finFiltroEstado=this.value;renderFinanzas()"><option value="">Todos los estados</option>${estOpts}</select>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="openFinModal(null)">+ Agregar cuenta</button>
+  </div>
+  ${data.length?`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:1.5rem">${data.map(f=>finCardHTML(f)).join('')}</div>`:`<div class="empty">Sin cuentas registradas.</div>`}
+  ${finanzas.length>=2?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.5rem">
+    <div class="chart-wrap"><h3>Inversion vs Beneficios</h3><div style="position:relative;height:200px"><canvas id="fin-ch-emp"></canvas></div></div>
+    <div class="chart-wrap"><h3>Distribucion de estados</h3><div style="position:relative;height:200px"><canvas id="fin-ch-estado"></canvas></div></div>
+  </div>`:''}`;
+  if(finanzas.length>=2){setTimeout(()=>{
+    destroyChart('fin-emp');destroyChart('fin-est');
+    const empMap={};finanzas.forEach(f=>{if(!empMap[f.empresa])empMap[f.empresa]={inv:0,ben:0};empMap[f.empresa].inv+=parseFloat(f.valor)||0;empMap[f.empresa].ben+=parseFloat(f.beneficios)||0});
+    const empLabels=Object.keys(empMap);const gc='rgba(255,255,255,.05)',tc='#555';
+    const c1=document.getElementById('fin-ch-emp');
+    if(c1)chartRefs['fin-emp']=new Chart(c1,{type:'bar',data:{labels:empLabels,datasets:[{label:'Invertido',data:empLabels.map(e=>empMap[e].inv),backgroundColor:'rgba(244,63,94,.7)',borderRadius:4,borderSkipped:false},{label:'Beneficios',data:empLabels.map(e=>empMap[e].ben),backgroundColor:'rgba(16,185,129,.7)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:11},boxWidth:10,color:tc}}},scales:{x:{grid:{color:gc},ticks:{font:{size:11},color:tc}},y:{grid:{color:gc},ticks:{font:{size:11},color:tc,callback:v=>'$'+v}}}}});
+    const estCounts={};ESTADOS_FIN.forEach(e=>estCounts[e]=finanzas.filter(f=>f.estado===e).length);
+    const estColors={'En proceso':'#3b82f6','Pasada':'#10b981','Quemada':'#f43f5e'};
+    const c2=document.getElementById('fin-ch-estado');
+    if(c2)chartRefs['fin-est']=new Chart(c2,{type:'doughnut',data:{labels:Object.keys(estCounts),datasets:[{data:Object.values(estCounts),backgroundColor:Object.keys(estCounts).map(e=>estColors[e]||'#888'),borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{font:{size:11},boxWidth:10,color:tc,padding:12}}},cutout:'65%'}});
+  },80)}
+}
+function finCardHTML(f){
+  const color=EMP_COLORS_FIN[f.empresa]||'#888';
+  const estadoCls=f.estado==='Pasada'?'pasada':f.estado==='Quemada'?'quemada':'proceso';
+  const ben=parseFloat(f.beneficios)||0,val=parseFloat(f.valor)||0,neta=ben-val;
+  return`<div class="fin-card" style="border-left:3px solid ${color}">
+    <div class="fin-card-top">
+      <div class="fin-card-emp"><div style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;margin-right:6px"></div><span class="fin-card-emp-name">${f.empresa.toUpperCase()}</span></div>
+      <span class="fin-estado ${estadoCls}">${f.estado}</span>
+    </div>
+    <div class="fin-card-tipo">${f.tipo||''}${f.tamaño?' · '+f.tamaño:''}</div>
+    <div class="fin-card-size">$${val.toLocaleString()} <span style="font-size:13px;color:var(--txt2);font-weight:400">pagado</span></div>
+    <div class="fin-card-params">
+      <div class="fin-param"><div class="fpl">Compra</div><div class="fpv">${f.fecha||'—'}</div></div>
+      <div class="fin-param"><div class="fpl">Resultado</div><div class="fpv">${f.fechaRes||'—'}</div></div>
+      <div class="fin-param"><div class="fpl">Beneficios</div><div class="fpv ${ben>0?'pos':'neu'}">$${ben.toLocaleString()}</div></div>
+      <div class="fin-param wide"><div class="fpl">Neta</div><div class="fpv ${neta>=0?'pos':'neg'}">${neta>=0?'+':''}&dollar;${Math.abs(neta).toLocaleString()}</div></div>
+    </div>
+    ${f.notas?`<div style="font-size:12px;color:var(--txt2);font-style:italic;margin-bottom:10px;padding:7px 10px;background:var(--bg3);border-radius:7px;border-left:2px solid var(--border2)">${f.notas}</div>`:''}
+    <div class="fin-actions"><button class="btn btn-ghost btn-sm" onclick="openFinModal('${f.id}')">Editar</button><button class="btn btn-danger btn-sm" onclick="deleteFinanza('${f.id}')">Eliminar</button></div>
+  </div>`;
+}
+function deleteFinanza(id){if(!confirm('Eliminar?'))return;finanzas=finanzas.filter(f=>f.id!==id);saveAll();renderFinanzas()}
+function openFinModal(id){
+  finEditId=id;const f=id?finanzas.find(x=>x.id===id):null;
+  const empOpts=EMPRESAS_FIN.map(e=>`<option${f&&f.empresa===e?' selected':''}>${e}</option>`).join('');
+  const tipoOpts=['Challenge','Evaluation','PA','Live','Otro'].map(t=>`<option${f&&f.tipo===t?' selected':''}>${t}</option>`).join('');
+  const tamOpts=TAMAÑOS.map(t=>`<option${f&&f.tamaño===t?' selected':''}>${t}</option>`).join('');
+  const estOpts=ESTADOS_FIN.map(e=>`<option${f&&f.estado===e?' selected':''}>${e}</option>`).join('');
+  document.body.insertAdjacentHTML('beforeend',`<div class="fin-modal-bg" id="fin-modal-bg" onclick="closeFinModal()">
+    <div class="fin-modal" onclick="event.stopPropagation()">
+      <button class="fin-modal-close" onclick="closeFinModal()">×</button>
+      <h3>${id?'Editar cuenta':'Registrar cuenta'}</h3>
+      <div class="ff-grid">
+        <div class="ff"><label>Empresa</label><select id="fm-emp">${empOpts}</select></div>
+        <div class="ff"><label>Tipo</label><select id="fm-tipo">${tipoOpts}</select></div>
+        <div class="ff"><label>Tamaño</label><select id="fm-tam">${tamOpts}</select></div>
+        <div class="ff"><label>Valor pagado ($)</label><input id="fm-val" type="number" value="${f?f.valor:''}" placeholder="150"/></div>
+        <div class="ff"><label>Fecha de compra</label><input id="fm-fecha" type="date" value="${f?f.fecha:''}"/></div>
+        <div class="ff"><label>Estado</label><select id="fm-est">${estOpts}</select></div>
+        <div class="ff"><label>Fecha resultado</label><input id="fm-fechares" type="date" value="${f?f.fechaRes:''}"/></div>
+        <div class="ff"><label>Beneficios ($)</label><input id="fm-ben" type="number" value="${f?f.beneficios:''}" placeholder="0"/></div>
+      </div>
+      <div class="ff"><label>Notas</label><textarea id="fm-notas" placeholder="Observaciones...">${f?f.notas||'':''}</textarea></div>
+      <div class="fin-modal-footer"><button class="btn btn-ghost" onclick="closeFinModal()">Cancelar</button><button class="btn btn-primary" onclick="saveFinModal()">Guardar</button></div>
+    </div></div>`);
+}
+function saveFinModal(){
+  const data={empresa:document.getElementById('fm-emp').value,tipo:document.getElementById('fm-tipo').value,tamaño:document.getElementById('fm-tam').value,valor:document.getElementById('fm-val').value,fecha:document.getElementById('fm-fecha').value,estado:document.getElementById('fm-est').value,fechaRes:document.getElementById('fm-fechares').value,beneficios:document.getElementById('fm-ben').value||'0',notas:document.getElementById('fm-notas').value.trim()};
+  if(finEditId){Object.assign(finanzas.find(x=>x.id===finEditId),data)}else{finanzas.push({id:genId(),...data})}
+  saveAll();closeFinModal();renderFinanzas();
+}
+function closeFinModal(){const m=document.getElementById('fin-modal-bg');if(m)m.remove()}
+
+function exportCSV(){
+  if(!ops.length){alert('No hay operaciones para exportar');return}
+  const headers=['Fecha','Estrategia','Empresa','Cuenta','Par','% Resultado','$ Resultado','Notas'];
+  const rows=ops.map(o=>[o.fecha,o.strat,o.empresa||'',o.cuenta||'',o.par,o.pct,o.usd||'',o.nota||''].map(v=>`"${v}"`).join(','));
+  const csv=[headers.join(','),...rows].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='trading_journal_'+TODAY_STR+'.csv';a.click();URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
