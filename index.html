@@ -417,7 +417,6 @@ tr:hover td{background:rgba(255,255,255,.02)}
   </div>
 </div>
 
-<div id="debug-badge" style="position:fixed;top:4px;right:4px;z-index:9999;background:#000;color:#0f0;font-size:10px;padding:4px 8px;border-radius:6px;font-family:monospace;opacity:.9;pointer-events:none"></div>
 <div class="app" id="app-root" style="display:none">
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
   <!-- SIDEBAR -->
@@ -738,16 +737,8 @@ updateClock();
 setInterval(updateClock,30000);
 document.addEventListener('touchstart',function(){},{passive:true});
 
-let sessionStarted=false,authFireCount=0;
-function updateDebugBadge(){
-  const b=document.getElementById('debug-badge');
-  if(b)b.textContent='auth:'+authFireCount+' page:'+(document.querySelector('.page.show')?.id||'-')+' | t:'+(window.__lastTouch||'-')+' c:'+(window.__lastClick||'-');
-}
-document.addEventListener('touchend',function(e){window.__lastTouch=(e.target.className||e.target.tagName||'?').toString().slice(0,20);updateDebugBadge()},true);
-document.addEventListener('click',function(e){window.__lastClick=(e.target.className||e.target.tagName||'?').toString().slice(0,20);updateDebugBadge()},true);
+let sessionStarted=false;
 auth.onAuthStateChanged(user=>{
-  authFireCount++;
-  updateDebugBadge();
   currentUser=user;
   if(!user){
     sessionStarted=false;
@@ -808,7 +799,6 @@ function showPage(id,el){
   if(id==='historial')buildFilterHist();
   if(id==='plan')buildDiasBtnsPlan();
   renderCurrentPage();
-  updateDebugBadge();
 }
 function renderCurrentPage(){
   const shown=document.querySelector('.page.show');
