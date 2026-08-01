@@ -6,6 +6,15 @@
 <title>Trading Journal</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#080b0f"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Trading Journal"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -385,6 +394,13 @@ tr:hover td{background:rgba(255,255,255,.02)}
 }
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
 .sidebar-overlay.show{display:block}
+
+/* LOGIN */
+.login-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:300;padding:1rem}
+.login-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rxl);padding:2rem;width:100%;max-width:360px}
+.login-card h1{font-size:20px;font-weight:700;margin-bottom:1.5rem;text-align:center;letter-spacing:-.3px}
+.login-card h1 span{background:linear-gradient(135deg,var(--orange),var(--yellow));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-error{color:var(--red);font-size:12px;margin-top:10px;min-height:16px;text-align:center}
 </style>
 </head>
 <body>
@@ -392,7 +408,17 @@ tr:hover td{background:rgba(255,255,255,.02)}
 <div class="ambient ambient-2"></div>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<div class="app">
+<div class="login-screen" id="login-screen">
+  <div class="login-card">
+    <h1>Trading<span> Journal</span></h1>
+    <div class="form-group" style="margin-bottom:12px"><label>Correo</label><input type="email" id="login-email" placeholder="tu@correo.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div class="form-group" style="margin-bottom:12px"><label>Contraseña</label><input type="password" id="login-pass" placeholder="********" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">Ingresar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div class="app" id="app-root" style="display:none">
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
@@ -536,6 +562,31 @@ tr:hover td{background:rgba(255,255,255,.02)}
 </div>
 
 <script>
+// ==================== FIREBASE ====================
+const firebaseConfig={
+  apiKey:"AIzaSyBEEcGob8DAmasL3wr35AG97lwlwXs6NwI",
+  authDomain:"trading-journal-8082e.firebaseapp.com",
+  projectId:"trading-journal-8082e",
+  storageBucket:"trading-journal-8082e.firebasestorage.app",
+  messagingSenderId:"699834054659",
+  appId:"1:699834054659:web:4c2864f55802bb25fb3636",
+  measurementId:"G-PLD60MKMYZ"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+db.enablePersistence().catch(()=>{});
+let currentUser=null,unsubscribeSnapshot=null;
+
+function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const err=document.getElementById('login-error');
+  err.textContent='';
+  if(!email||!pass){err.textContent='Completa correo y contraseña';return}
+  auth.signInWithEmailAndPassword(email,pass).catch(()=>{err.textContent='Correo o contraseña incorrectos'});
+}
+
 // ==================== CONSTANTS ====================
 const MONTHS_ES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MONTHS_SHORT=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -641,7 +692,7 @@ function getFraseDelDia(){
 }
 
 // ==================== STORAGE ====================
-function saveAll(){
+function persistLocal(){
   try{
     localStorage.setItem('tj_ops',JSON.stringify(ops));
     localStorage.setItem('tj_empresas',JSON.stringify(empresas));
@@ -650,6 +701,12 @@ function saveAll(){
     localStorage.setItem('tj_plan',JSON.stringify(planData));
     localStorage.setItem('tj_meta',metaMensual);
   }catch(e){}
+}
+function saveAll(){
+  persistLocal();
+  if(currentUser){
+    db.collection('users').doc(currentUser.uid).set({ops,empresas,estrategias,finanzas,planData,metaMensual},{merge:true}).catch(e=>console.error('Firestore save error',e));
+  }
 }
 function loadAll(){
   try{
@@ -676,13 +733,39 @@ function loadAll(){
 
 // ==================== INIT ====================
 document.getElementById('f-fecha').value=TODAY_STR;
-loadAll();
 updateClock();
 setInterval(updateClock,30000);
-buildStratSelect();
-buildColorPick();
-buildEmpPills();
-showPage('dashboard',document.querySelector('.nav-item.active'));
+
+auth.onAuthStateChanged(user=>{
+  currentUser=user;
+  if(!user){
+    if(unsubscribeSnapshot){unsubscribeSnapshot();unsubscribeSnapshot=null}
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('app-root').style.display='none';
+    return;
+  }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-root').style.display='';
+  loadAll();
+  buildStratSelect();buildColorPick();buildEmpPills();
+  showPage('dashboard',document.querySelector('.nav-item.active'));
+  unsubscribeSnapshot=db.collection('users').doc(user.uid).onSnapshot(snap=>{
+    if(snap.exists){
+      const d=snap.data();
+      ops=d.ops||[];
+      empresas=(d.empresas&&d.empresas.length)?d.empresas:JSON.parse(JSON.stringify(DEFAULT_EMPRESAS));
+      estrategias=(d.estrategias&&d.estrategias.length)?d.estrategias:JSON.parse(JSON.stringify(DEFAULT_ESTRATEGIAS));
+      finanzas=d.finanzas||[];
+      planData=(d.planData&&d.planData.length)?d.planData:JSON.parse(JSON.stringify(PLAN_DEFAULT));
+      metaMensual=d.metaMensual||0;
+      persistLocal();
+    }else{
+      saveAll();
+    }
+    buildStratSelect();buildColorPick();buildEmpPills();
+    renderCurrentPage();
+  },err=>console.error('Firestore sync error',err));
+});
 
 function updateClock(){
   const now=new Date();
@@ -707,13 +790,21 @@ function showPage(id,el){
   document.getElementById('page-'+id).classList.add('show');
   if(el)el.classList.add('active');
   closeSidebar();
+  if(id==='nueva')buildEmpPills();
+  if(id==='historial')buildFilterHist();
+  if(id==='plan')buildDiasBtnsPlan();
+  renderCurrentPage();
+}
+function renderCurrentPage(){
+  const shown=document.querySelector('.page.show');
+  if(!shown)return;
+  const id=shown.id.replace('page-','');
   if(id==='dashboard')renderDashboard();
   if(id==='cal')renderCalendar();
-  if(id==='nueva')buildEmpPills();
-  if(id==='historial'){buildFilterHist();renderHistorial()}
+  if(id==='historial')renderHistorial();
   if(id==='meses')renderMeses();
   if(id==='stats')renderStats();
-  if(id==='plan'){buildDiasBtnsPlan();renderPlanDia()}
+  if(id==='plan')renderPlanDia();
   if(id==='cuentas')renderCuentas();
   if(id==='estrategias')renderEstrategias();
   if(id==='finanzas')renderFinanzas();
