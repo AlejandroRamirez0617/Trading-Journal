@@ -428,18 +428,18 @@ tr:hover td{background:rgba(255,255,255,.02)}
     </div>
     <nav class="sidebar-nav">
       <span class="nav-section">Principal</span>
-      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">⚡</span>Dashboard</div>
-      <div class="nav-item" onclick="showPage('cal',this)"><span class="nav-icon">📅</span>Calendario</div>
-      <div class="nav-item" onclick="showPage('nueva',this)"><span class="nav-icon">➕</span>Nueva operacion</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)" ontouchend="event.preventDefault();showPage('dashboard',this)"><span class="nav-icon">⚡</span>Dashboard</div>
+      <div class="nav-item" onclick="showPage('cal',this)" ontouchend="event.preventDefault();showPage('cal',this)"><span class="nav-icon">📅</span>Calendario</div>
+      <div class="nav-item" onclick="showPage('nueva',this)" ontouchend="event.preventDefault();showPage('nueva',this)"><span class="nav-icon">➕</span>Nueva operacion</div>
       <span class="nav-section">Analisis</span>
-      <div class="nav-item" onclick="showPage('historial',this)"><span class="nav-icon">📋</span>Historial</div>
-      <div class="nav-item" onclick="showPage('meses',this)"><span class="nav-icon">📆</span>Por mes</div>
-      <div class="nav-item" onclick="showPage('stats',this)"><span class="nav-icon">📈</span>Estrategias</div>
+      <div class="nav-item" onclick="showPage('historial',this)" ontouchend="event.preventDefault();showPage('historial',this)"><span class="nav-icon">📋</span>Historial</div>
+      <div class="nav-item" onclick="showPage('meses',this)" ontouchend="event.preventDefault();showPage('meses',this)"><span class="nav-icon">📆</span>Por mes</div>
+      <div class="nav-item" onclick="showPage('stats',this)" ontouchend="event.preventDefault();showPage('stats',this)"><span class="nav-icon">📈</span>Estrategias</div>
       <span class="nav-section">Configuracion</span>
-      <div class="nav-item" onclick="showPage('plan',this)"><span class="nav-icon">🗓️</span>Plan semanal</div>
-      <div class="nav-item" onclick="showPage('cuentas',this)"><span class="nav-icon">🏦</span>Mis cuentas</div>
-      <div class="nav-item" onclick="showPage('estrategias',this)"><span class="nav-icon">⚙️</span>Estrategias config</div>
-      <div class="nav-item" onclick="showPage('finanzas',this)"><span class="nav-icon">💰</span>Finanzas</div>
+      <div class="nav-item" onclick="showPage('plan',this)" ontouchend="event.preventDefault();showPage('plan',this)"><span class="nav-icon">🗓️</span>Plan semanal</div>
+      <div class="nav-item" onclick="showPage('cuentas',this)" ontouchend="event.preventDefault();showPage('cuentas',this)"><span class="nav-icon">🏦</span>Mis cuentas</div>
+      <div class="nav-item" onclick="showPage('estrategias',this)" ontouchend="event.preventDefault();showPage('estrategias',this)"><span class="nav-icon">⚙️</span>Estrategias config</div>
+      <div class="nav-item" onclick="showPage('finanzas',this)" ontouchend="event.preventDefault();showPage('finanzas',this)"><span class="nav-icon">💰</span>Finanzas</div>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-date" id="sidebar-time">—</div>
