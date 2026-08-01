@@ -736,9 +736,11 @@ document.getElementById('f-fecha').value=TODAY_STR;
 updateClock();
 setInterval(updateClock,30000);
 
+let sessionStarted=false;
 auth.onAuthStateChanged(user=>{
   currentUser=user;
   if(!user){
+    sessionStarted=false;
     if(unsubscribeSnapshot){unsubscribeSnapshot();unsubscribeSnapshot=null}
     document.getElementById('login-screen').style.display='flex';
     document.getElementById('app-root').style.display='none';
@@ -746,6 +748,8 @@ auth.onAuthStateChanged(user=>{
   }
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app-root').style.display='';
+  if(sessionStarted)return;
+  sessionStarted=true;
   loadAll();
   buildStratSelect();buildColorPick();buildEmpPills();
   showPage('dashboard',document.querySelector('.nav-item.active'));
