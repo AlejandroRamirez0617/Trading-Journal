@@ -736,6 +736,7 @@ function loadAll(){
 document.getElementById('f-fecha').value=TODAY_STR;
 updateClock();
 setInterval(updateClock,30000);
+document.addEventListener('touchstart',function(){},{passive:true});
 
 let sessionStarted=false,authFireCount=0;
 function updateDebugBadge(){
